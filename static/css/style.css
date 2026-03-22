@@ -1,0 +1,88 @@
+/* ─────────────────────────────────────
+   DataNarrate - Custom Styles
+   Only what Bootstrap doesn't cover
+───────────────────────────────────── */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* ── HERO SECTION ── */
+.hero-section {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  padding: 5rem 0;
+}
+
+/* ── HOW IT WORKS - STEP NUMBERS ── */
+.step-number {
+  width: 48px;
+  height: 48px;
+  background: #212529;
+  color: #ffc107;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* ── STORY CARDS ── */
+.story-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none !important;
+}
+.story-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12) !important;
+}
+
+/* Top coloured bar on story cards */
+.card-top-bar {
+  height: 6px;
+  border-radius: 4px 4px 0 0;
+}
+
+/* ── INSIGHT ITEMS ── */
+.insight-item {
+  background: #fffbea;
+  border-left: 4px solid #ffc107;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* ── STAT BOXES (result page) ── */
+.stat-box {
+  border: 1px solid #dee2e6;
+}
+
+/* ── CHART RADIO BUTTONS ── */
+.chart-radio-box {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.chart-radio-box:has(input:checked) {
+  background: #212529;
+  color: #fff;
+}
+
+/* ── MONOSPACE TEXTAREA ── */
+.font-monospace {
+  font-size: 0.88rem;
+}
+
+/* ── NAVBAR ── */
+.navbar-brand {
+  font-size: 1.3rem;
+  letter-spacing: -0.5px;
+}
+
+/* ── FOOTER ── */
+footer {
+  font-size: 0.9rem;
+}
