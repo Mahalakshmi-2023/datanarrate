@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Gallery - DataNarrate{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1"> Story Gallery</h2>
+      <p class="text-muted mb-0">{{ stories | length }} stories saved</p>
+    </div>
+    <a href="{{ url_for('create') }}" class="btn btn-dark fw-bold">
+      <i class="bi bi-plus-circle"></i> New Story
+    </a>
+  </div>
+
+  <!-- Category filter buttons (jQuery powered) -->
+  <div class="mb-4" id="filterBar">
+    <button class="btn btn-dark btn-sm me-1 filter-btn" data-filter="all">All</button>
+    <button class="btn btn-outline-dark btn-sm me-1 filter-btn" data-filter="sales"> Sales</button>
+    <button class="btn btn-outline-dark btn-sm me-1 filter-btn" data-filter="survey"> Survey</button>
+    <button class="btn btn-outline-dark btn-sm me-1 filter-btn" data-filter="finance"> Finance</button>
+    <button class="btn btn-outline-dark btn-sm me-1 filter-btn" data-filter="education"> Education</button>
+    <button class="btn btn-outline-dark btn-sm me-1 filter-btn" data-filter="health"> Health</button>
+    <button class="btn btn-outline-dark btn-sm me-1 filter-btn" data-filter="custom"> Custom</button>
+  </div>
+
+  <!-- Stories grid -->
+  {% if stories %}
+  <div class="row g-4" id="storyGrid">
+    {% for story in stories %}
+    <div class="col-md-6 col-lg-4 story-item" data-cat="{{ story['category'] }}">
+      <div class="card h-100 shadow-sm story-card">
+
+        <!-- Top colour bar -->
+        <div class="card-top-bar bg-{{
+          'warning' if story['category'] == 'sales' else
+          'info'    if story['category'] == 'survey' else
+          'success' if story['category'] == 'finance' else
+          'primary' if story['category'] == 'education' else
+          'danger'  if story['category'] == 'health' else 'secondary'
+        }}"></div>
+
+        <div class="card-body">
+          <!-- Badges -->
+          <span class="badge bg-secondary me-1">{{ story['category'] }}</span>
+          <span class="badge bg-dark">{{ story['chart_type'] }}</span>
+
+          <!-- Title -->
+          <h6 class="fw-bold mt-2 mb-1">{{ story['title'] }}</h6>
+
+          <!-- Date -->
+          <p class="text-muted small mb-3">
+            <i class="bi bi-calendar3"></i> {{ story['created_at'] }}
+          </p>
+
+          <!-- Buttons -->
+          <div class="d-flex gap-2">
+            <a href="{{ url_for('result', story_id=story['id']) }}"
+               class="btn btn-dark btn-sm flex-grow-1">
+              <i class="bi bi-eye"></i> View
+            </a>
+            <form method="POST"
+                  action="{{ url_for('delete', story_id=story['id']) }}"
+                  onsubmit="return confirm('Delete this story?')">
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Shown when filter returns nothing -->
+  <div id="no-results" class="text-center text-muted py-5" style="display:none;">
+    <i class="bi bi-search" style="font-size:3rem;"></i>
+    <p class="mt-2">No stories in this category.</p>
+  </div>
+
+  {% else %}
+  <!-- Empty state -->
+  <div class="text-center py-5 text-muted">
+    <i class="bi bi-bar-chart" style="font-size:4rem;"></i>
+    <h5 class="mt-3">No stories yet!</h5>
+    <a href="{{ url_for('create') }}" class="btn btn-dark mt-2">
+      Create Your First Story
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // ── FILTER BY CATEGORY ──
+  // When a filter button is clicked, show only matching cards
+  $("#filterBar").on("click", ".filter-btn", function () {
+    const filter = $(this).data("filter");
+
+    // Update button styles
+    $(".filter-btn").removeClass("btn-dark").addClass("btn-outline-dark");
+    $(this).removeClass("btn-outline-dark").addClass("btn-dark");
+
+    // Show/hide cards
+    $(".story-item").each(function () {
+      if (filter === "all" || $(this).data("cat") === filter) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    });
+
+    // Show "no results" message if nothing visible
+    const visible = $(".story-item:visible").length;
+    $("#no-results").toggle(visible === 0);
+  });
+</script>
+{% endblock %}

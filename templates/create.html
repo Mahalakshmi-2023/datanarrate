@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Create Story - DataNarrate{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+
+      <h2 class="fw-bold mb-1"> Create a Data Story</h2>
+      <p class="text-muted mb-4">Fill in the form below. Your chart and insights will be generated automatically.</p>
+
+      <!-- Show error if any -->
+      {% if error %}
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
+      </div>
+      {% endif %}
+
+      <div class="row g-4">
+
+        <!-- ── FORM (left side) ── -->
+        <div class="col-lg-6">
+          <form action="{{ url_for('submit') }}" method="POST" id="storyForm">
+
+            <!-- Title -->
+            <div class="mb-3">
+              <label class="form-label fw-bold" for="title">
+                Story Title <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="title" name="title"
+                     placeholder="e.g. Q4 Sales by Region"
+                     value="{{ request.form.get('title', '') }}"/>
+              <div class="text-danger small mt-1" id="title-error"></div>
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+              <label class="form-label fw-bold" for="category">
+                Category <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="category" name="category">
+                <option value="">-- Select category --</option>
+                <option value="sales"     {% if request.form.get('category')=='sales'     %}selected{% endif %}>💰 Sales</option>
+                <option value="survey"    {% if request.form.get('category')=='survey'    %}selected{% endif %}>🗣️ Survey</option>
+                <option value="finance"   {% if request.form.get('category')=='finance'   %}selected{% endif %}>💵 Finance</option>
+                <option value="education" {% if request.form.get('category')=='education' %}selected{% endif %}>📚 Education</option>
+                <option value="health"    {% if request.form.get('category')=='health'    %}selected{% endif %}>🏥 Health</option>
+                <option value="custom"    {% if request.form.get('category')=='custom'    %}selected{% endif %}>✨ Custom</option>
+              </select>
+              <div class="text-danger small mt-1" id="category-error"></div>
+            </div>
+
+            <!-- Chart Type -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Chart Type</label>
+              <div class="d-flex flex-wrap gap-2">
+                {% for val, label in [('bar',' Bar'),('line',' Line'),('pie',' Pie'),('doughnut',' Doughnut'),('radar',' Radar')] %}
+                <div class="form-check form-check-inline border rounded px-3 py-2 chart-radio-box">
+                  <input class="form-check-input" type="radio"
+                         name="chart_type" id="chart_{{ val }}" value="{{ val }}"
+                         {% if val == 'bar' %}checked{% endif %}
+                         onchange="renderPreview()"/>
+                  <label class="form-check-label" for="chart_{{ val }}">{{ label }}</label>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Data Input -->
+            <div class="mb-3">
+              <label class="form-label fw-bold" for="raw_data">
+                Your Data <span class="text-danger">*</span>
+              </label>
+              <p class="text-muted small mb-1">
+                One entry per line — format: <code>Label, Value</code>
+              </p>
+              <!-- Sample data buttons -->
+              <div class="mb-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm"
+                        onclick="loadSample('sales')">Sales Sample</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm"
+                        onclick="loadSample('survey')">Survey Sample</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm"
+                        onclick="loadSample('monthly')">Monthly Sample</button>
+              </div>
+              <textarea class="form-control font-monospace" id="raw_data" name="raw_data"
+                        rows="9"
+                        placeholder="North America, 420000&#10;Europe, 310000&#10;Asia, 280000">{{ request.form.get('raw_data', '') }}</textarea>
+              <div class="text-danger small mt-1" id="data-error"></div>
+              <div class="text-muted small mt-1" id="row-count"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold"
+                    id="submitBtn">
+              <i class="bi bi-lightning-fill"></i> Generate Story
+            </button>
+
+          </form>
+        </div>
+
+        <!-- ── LIVE PREVIEW (right side) ── -->
+        <div class="col-lg-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white fw-bold">
+              <i class="bi bi-eye"></i> Live Preview
+            </div>
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+              <div id="preview-empty" class="text-center text-muted py-5">
+                <i class="bi bi-bar-chart" style="font-size:3rem;"></i>
+                <p class="mt-2">Enter data to see preview</p>
+              </div>
+              <canvas id="previewChart" style="display:none;"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/create.js') }}"></script>
+{% endblock %}

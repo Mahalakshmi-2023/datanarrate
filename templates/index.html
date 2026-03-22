@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Home - DataNarrate{% endblock %}
+
+{% block content %}
+
+<!-- ── HERO SECTION ── -->
+<section class="hero-section text-white text-center py-5">
+  <div class="container">
+    <h1 class="display-4 fw-bold"> DataNarrate</h1>
+    <p class="lead mb-4">
+      Turn your raw numbers into visual stories with instant AI insights.
+    </p>
+    <a href="{{ url_for('create') }}" class="btn btn-warning btn-lg fw-bold me-2">
+      <i class="bi bi-lightning-fill"></i> Create a Story
+    </a>
+    <a href="{{ url_for('gallery') }}" class="btn btn-outline-light btn-lg">
+      <i class="bi bi-collection"></i> View Gallery
+    </a>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-4">How It Works</h2>
+    <div class="row g-4 text-center">
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="step-number">1</div>
+            <h5 class="fw-bold mt-3">Enter Your Data</h5>
+            <p class="text-muted">
+              Paste your data as Label, Value pairs — one per line.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="step-number">2</div>
+            <h5 class="fw-bold mt-3">Choose a Chart</h5>
+            <p class="text-muted">
+              Pick from Bar, Line, Pie, Doughnut, or Radar chart.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="step-number">3</div>
+            <h5 class="fw-bold mt-3">Get Insights</h5>
+            <p class="text-muted">
+              Instantly see a chart and auto-generated data insights.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── RECENT STORIES ── -->
+{% if stories %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold mb-0">Recent Stories</h2>
+      <a href="{{ url_for('gallery') }}" class="btn btn-outline-dark">
+        View All <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for story in stories %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm story-card">
+          <!-- Coloured top bar based on category -->
+          <div class="card-top-bar bg-{{ 
+            'warning' if story.category == 'sales' else
+            'info'    if story.category == 'survey' else
+            'success' if story.category == 'finance' else
+            'primary' if story.category == 'education' else
+            'danger'  if story.category == 'health' else 'secondary'
+          }}"></div>
+
+          <div class="card-body">
+            <!-- Category badge -->
+            <span class="badge bg-secondary mb-2">{{ story.category }}</span>
+            <span class="badge bg-dark mb-2">{{ story.chart_type }}</span>
+
+            <!-- Story title -->
+            <h6 class="fw-bold">{{ story.title }}</h6>
+
+            <!-- Date -->
+            <p class="text-muted small mb-3">
+              <i class="bi bi-calendar3"></i> {{ story.created_at }}
+            </p>
+
+            <!-- View button -->
+            <a href="{{ url_for('result', story_id=story.id) }}"
+               class="btn btn-dark btn-sm w-100">
+              <i class="bi bi-eye"></i> View Story
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
