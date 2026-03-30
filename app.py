@@ -11,7 +11,7 @@ from datetime import datetime
 # Create the Flask app
 app = Flask(__name__)
 
-DB = "datanarrrate.db"
+DB = "datanarrate.db"
 
 def init_db():
     ...
