@@ -11,9 +11,16 @@ from datetime import datetime
 # Create the Flask app
 app = Flask(__name__)
 
-# Database file name
 DB = "datanarrrate.db"
 
+def init_db():
+    ...
+
+def seed():
+    ...
+
+init_db()
+seed()
 
 # ── CREATE DATABASE TABLES ──────────────────
 def init_db():
