@@ -13,14 +13,9 @@ app = Flask(__name__)
 
 DB = "datanarrate.db"
 
-def init_db():
-    ...
+app = Flask(__name__)
 
-def seed():
-    ...
-
-init_db()
-seed()
+DB = "datanarrate.db"
 
 # ── CREATE DATABASE TABLES ──────────────────
 def init_db():
@@ -39,6 +34,18 @@ def init_db():
     conn.commit()
     conn.close()
 
+
+# ── SEED DATA ───────────────────────────
+def seed():
+    conn = sqlite3.connect(DB)
+    count = conn.execute("SELECT COUNT(*) FROM stories").fetchone()[0]
+    conn.close()
+
+    if count > 0:
+        return
+    ...
+init_db()
+seed()
 
 # ── GENERATE INSIGHTS FROM DATA ─────────────
 def get_insights(rows):
